@@ -18,7 +18,6 @@ import (
 	"github.com/charmbracelet/wish"
 	bm "github.com/charmbracelet/wish/bubbletea"
 	lm "github.com/charmbracelet/wish/logging"
-	"github.com/muesli/termenv"
 )
 
 const (
@@ -65,63 +64,6 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 		wish.Fatalln(s, "no active terminal, skipping")
 		return nil, nil
 	}
-	m := model{}
+	m := &model{}
 	return m, []tea.ProgramOption{tea.WithAltScreen()}
-}
-
-var (
-	color   = termenv.EnvColorProfile().Color
-	keyword = termenv.Style{}.Foreground(color("204")).Background(color("235")).Styled
-	help    = termenv.Style{}.Foreground(color("241")).Styled
-)
-
-type model struct {
-	altscreen bool
-	quitting  bool
-}
-
-func (m model) Init() tea.Cmd {
-	return nil
-}
-
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "q", "ctrl+c", "esc":
-			m.quitting = true
-			return m, tea.Quit
-		case " ":
-			var cmd tea.Cmd
-			if m.altscreen {
-				cmd = tea.ExitAltScreen
-			} else {
-				cmd = tea.EnterAltScreen
-			}
-			m.altscreen = !m.altscreen
-			return m, cmd
-		}
-	}
-	return m, nil
-}
-
-func (m model) View() string {
-	if m.quitting {
-		return "Bye!\n"
-	}
-
-	const (
-		altscreenMode = " altscreen mode "
-		inlineMode    = " inline mode "
-	)
-
-	var mode string
-	if m.altscreen {
-		mode = altscreenMode
-	} else {
-		mode = inlineMode
-	}
-
-	return fmt.Sprintf("\n\n  You're in %s\n\n\n", keyword(mode)) +
-		help("  space: switch modes • q: exit\n")
 }
