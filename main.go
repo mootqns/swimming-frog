@@ -18,6 +18,7 @@ import (
 	"github.com/charmbracelet/wish"
 	bm "github.com/charmbracelet/wish/bubbletea"
 	lm "github.com/charmbracelet/wish/logging"
+	"github.com/muesli/termenv"
 )
 
 const (
@@ -58,10 +59,6 @@ func main() {
 
 }
 
-// You can wire any Bubble Tea model up to the middleware with a function that
-// handles the incoming ssh.Session. Here we just grab the terminal info and
-// pass it to the new model. You can also return tea.ProgramOptions (such as
-// tea.WithAltScreen) on a session by session basis.
 func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 	_, _, active := s.Pty()
 	if !active {
@@ -72,8 +69,15 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 	return m, []tea.ProgramOption{tea.WithAltScreen()}
 }
 
-// Just a generic tea.Model to demo terminal information of ssh.
+var (
+	color   = termenv.EnvColorProfile().Color
+	keyword = termenv.Style{}.Foreground(color("204")).Background(color("235")).Styled
+	help    = termenv.Style{}.Foreground(color("241")).Styled
+)
+
 type model struct {
+	altscreen bool
+	quitting  bool
 }
 
 func (m model) Init() tea.Cmd {
@@ -84,15 +88,40 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "q", "ctrl+c":
+		case "q", "ctrl+c", "esc":
+			m.quitting = true
 			return m, tea.Quit
+		case " ":
+			var cmd tea.Cmd
+			if m.altscreen {
+				cmd = tea.ExitAltScreen
+			} else {
+				cmd = tea.EnterAltScreen
+			}
+			m.altscreen = !m.altscreen
+			return m, cmd
 		}
 	}
 	return m, nil
 }
 
 func (m model) View() string {
-	s := "hello ssh world\n"
-	s += "press 'q' to quit\n"
-	return s
+	if m.quitting {
+		return "Bye!\n"
+	}
+
+	const (
+		altscreenMode = " altscreen mode "
+		inlineMode    = " inline mode "
+	)
+
+	var mode string
+	if m.altscreen {
+		mode = altscreenMode
+	} else {
+		mode = inlineMode
+	}
+
+	return fmt.Sprintf("\n\n  You're in %s\n\n\n", keyword(mode)) +
+		help("  space: switch modes • q: exit\n")
 }
