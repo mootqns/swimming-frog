@@ -1,6 +1,6 @@
 module tui-ssh-game
 
-go 1.23
+go 1.21.3
 
 require (
 	github.com/charmbracelet/bubbletea v0.24.2
