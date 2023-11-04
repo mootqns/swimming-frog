@@ -18,7 +18,8 @@ import (
 )
 
 const (
-	host = "164.92.75.103"
+	// host = "164.92.75.103"
+	host = "localhost"
 	port = 8000
 )
 
@@ -60,6 +61,7 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 		wish.Fatalln(s, "no active terminal, skipping")
 		return nil, nil
 	}
-	m := initialModel()
+	// m := initialModel()
+	m := newSnakeGame()
 	return m, []tea.ProgramOption{tea.WithAltScreen()}
 }
