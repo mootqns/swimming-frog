@@ -33,34 +33,23 @@ type coord struct {
 	y int
 }
 
-type snakeBody struct {
-	// first element in list is the head of the snake
-	body      []coord
-	direction int
-}
-
 // this is the model used by bubbletea
 type snakeGame struct {
 	gameBoard [][]int
-	snake     snakeBody
+	frog      coord
 	pellet    coord
 	score     int
 	gameOver  bool
+
+	width  int
+	height int
 }
 
 func newSnakeGame() snakeGame {
-	// create a snake in the middle of the board
-	snake := snakeBody{
-		body: []coord{
-			{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT / 2},
-			{x: BOARD_WIDTH / 2, y: BOARD_HEIGHT / 2},
-			{x: (BOARD_WIDTH / 2) - 1, y: BOARD_HEIGHT / 2},
-		},
-		direction: RIGHT,
-	}
+	frog := coord{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT / 2}
 
 	game := snakeGame{
-		snake:    snake,
+		frog:     frog,
 		gameOver: false,
 	}
 
@@ -68,28 +57,6 @@ func newSnakeGame() snakeGame {
 	game.updateBoard()
 
 	return game
-}
-
-func (s snakeBody) coordInBody(c coord) bool {
-	for _, snakePart := range s.body {
-		if snakePart == c {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (s snakeBody) isHeadCollidingWithBody() bool {
-	head := s.body[0]
-
-	for i := 1; i < len(s.body); i++ {
-		if head == s.body[i] {
-			return true
-		}
-	}
-
-	return false
 }
 
 func (s *snakeGame) updateBoard() {
@@ -101,9 +68,7 @@ func (s *snakeGame) updateBoard() {
 			cellType := BLANK_CELL
 			curCell := coord{j, i}
 
-			if s.snake.coordInBody(curCell) {
-				cellType = SNAKE_CELL
-			} else if curCell == s.pellet {
+			if curCell == s.pellet {
 				cellType = PELLET_CELL
 			}
 
@@ -121,13 +86,6 @@ func (s *snakeGame) spawnPellet() {
 	pellet := coord{
 		x: rand.Intn(BOARD_WIDTH),
 		y: rand.Intn(BOARD_HEIGHT),
-	}
-
-	for s.snake.coordInBody(pellet) {
-		pellet = coord{
-			x: rand.Intn(BOARD_WIDTH),
-			y: rand.Intn(BOARD_HEIGHT),
-		}
 	}
 
 	s.pellet = pellet
@@ -148,19 +106,17 @@ func (s snakeGame) View() string {
 	scoreText := fmt.Sprintf("\n%s: %d\n\n", scoreLabel, s.score)
 
 	if s.gameOver {
-		return gameOverStyle.Render(gameOverText) + scoreText + "esc to quit\n"
+		return gameOverStyle.Render(gameOverText) + scoreText + "ctrl+c to quit\n"
 	}
 
 	screen := ""
 
 	for i := 0; i < BOARD_HEIGHT; i++ {
 		for j := 0; j < BOARD_WIDTH; j++ {
-			if s.gameBoard[i][j] == SNAKE_CELL {
-				screen += snakeStyle.Render(" ")
-			} else if s.gameBoard[i][j] == PELLET_CELL {
-				screen += pelletStyle.Render(" ")
+			if i == s.frog.y && j == s.frog.x {
+				screen += "🐸"
 			} else {
-				screen += baseStyle.Render(" ")
+				screen += " "
 			}
 		}
 
@@ -175,83 +131,72 @@ func (s snakeGame) View() string {
 }
 
 func (s snakeGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg.(type) {
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		s.width = msg.Width
+		s.height = msg.Height
 	case tea.KeyMsg:
-		switch msg.(tea.KeyMsg).String() {
-		case "esc":
+		switch msg.String() {
+		case "ctrl+c":
 			return s, tea.Quit
 
 		// when moving snake, don't allow movement in opposite direction
 		// this is done by checking if snake body part directly behind head
 		// is in the direction player is trying to move
+		case "q":
+			return s, tea.Quit
 		case "up":
-			upCoord := coord{x: s.snake.body[0].x, y: s.snake.body[0].y - 1}
-			if upCoord != s.snake.body[1] {
-				s.snake.direction = UP
+			if s.frog.y > 0 {
+				s.frog.y--
 			}
 		case "right":
-			rightCoord := coord{x: s.snake.body[0].x + 1, y: s.snake.body[0].y}
-			if rightCoord != s.snake.body[1] {
-				s.snake.direction = RIGHT
+			if s.frog.x < BOARD_WIDTH-1 {
+				s.frog.x++
 			}
 		case "down":
-			downCoord := coord{x: s.snake.body[0].x, y: s.snake.body[0].y + 1}
-			if downCoord != s.snake.body[1] {
-				s.snake.direction = DOWN
+			if s.frog.y < BOARD_HEIGHT-1 {
+				s.frog.y++
 			}
 		case "left":
-			leftCoord := coord{x: s.snake.body[0].x - 1, y: s.snake.body[0].y}
-			if leftCoord != s.snake.body[1] {
-				s.snake.direction = LEFT
+			if s.frog.x > 0 {
+				s.frog.x--
 			}
 		}
-	case TickMsg:
-		// move snake head in direction
-		prevSnakePartPos := s.snake.body[0]
+		// case TickMsg:
+		// 	// move snake head in direction
+		// 	prevSnakePartPos := s.snake.body[0]
 
-		switch s.snake.direction {
-		case UP:
-			s.snake.body[0].y -= 1
-		case RIGHT:
-			s.snake.body[0].x += 1
-		case DOWN:
-			s.snake.body[0].y += 1
-		case LEFT:
-			s.snake.body[0].x -= 1
-		}
+		// 	if s.snake.body[0].x < 0 || s.snake.body[0].x >= BOARD_WIDTH ||
+		// 		s.snake.body[0].y < 0 || s.snake.body[0].y >= BOARD_HEIGHT ||
+		// 		s.snake.isHeadCollidingWithBody() {
 
-		if s.snake.body[0].x < 0 || s.snake.body[0].x >= BOARD_WIDTH ||
-			s.snake.body[0].y < 0 || s.snake.body[0].y >= BOARD_HEIGHT ||
-			s.snake.isHeadCollidingWithBody() {
+		// 		s.gameOver = true
+		// 		break
+		// 	}
 
-			s.gameOver = true
-			break
-		}
+		// 	atePellet := s.snake.body[0] == s.pellet
 
-		atePellet := s.snake.body[0] == s.pellet
+		// 	/*
+		// 		move the rest of the snake
+		// 		temporarily save position of current part as prevPos
+		// 		move part to prevSnakePartPos
+		// 		set prevSnakePartPos to prevPos for the next iteration
+		// 	*/
+		// 	for i := 1; i < len(s.snake.body); i++ {
+		// 		prevPos := s.snake.body[i]
+		// 		s.snake.body[i] = prevSnakePartPos
+		// 		prevSnakePartPos = prevPos
+		// 	}
 
-		/*
-			move the rest of the snake
-			temporarily save position of current part as prevPos
-			move part to prevSnakePartPos
-			set prevSnakePartPos to prevPos for the next iteration
-		*/
-		for i := 1; i < len(s.snake.body); i++ {
-			prevPos := s.snake.body[i]
-			s.snake.body[i] = prevSnakePartPos
-			prevSnakePartPos = prevPos
-		}
+		// 	if atePellet {
+		// 		s.snake.body = append(s.snake.body, prevSnakePartPos)
+		// 		s.spawnPellet()
+		// 		s.score++
+		// 	}
 
-		if atePellet {
-			s.snake.body = append(s.snake.body, prevSnakePartPos)
-			s.spawnPellet()
-			s.score++
-		}
+		//s.updateBoard()
 
-		s.updateBoard()
-
-		return s, tickEvery()
+		// return s, tickEvery()
 	}
-
 	return s, nil
 }
