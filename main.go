@@ -55,6 +55,7 @@ func main() {
 	if err := s.Shutdown(ctx); err != nil && !errors.Is(err, ssh.ErrServerClosed) {
 		log.Error("could not stop server", "error", err)
 	}
+
 }
 
 // You can wire any Bubble Tea model up to the middleware with a function that
@@ -62,24 +63,17 @@ func main() {
 // pass it to the new model. You can also return tea.ProgramOptions (such as
 // tea.WithAltScreen) on a session by session basis.
 func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
-	pty, _, active := s.Pty()
+	_, _, active := s.Pty()
 	if !active {
 		wish.Fatalln(s, "no active terminal, skipping")
 		return nil, nil
 	}
-	m := model{
-		term:   pty.Term,
-		width:  pty.Window.Width,
-		height: pty.Window.Height,
-	}
+	m := model{}
 	return m, []tea.ProgramOption{tea.WithAltScreen()}
 }
 
 // Just a generic tea.Model to demo terminal information of ssh.
 type model struct {
-	term   string
-	width  int
-	height int
 }
 
 func (m model) Init() tea.Cmd {
@@ -88,9 +82,6 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
-		m.height = msg.Height
-		m.width = msg.Width
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q", "ctrl+c":
