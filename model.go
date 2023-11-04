@@ -10,7 +10,7 @@ type model struct {
 
 func initialModel() model {
 	return model{
-		frog: "frog",
+		frog: "🐸",
 	}
 }
 
