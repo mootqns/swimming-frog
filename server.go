@@ -62,6 +62,6 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 		return nil, nil
 	}
 	// m := initialModel()
-	m := NewFrogGame()
+	m := newFrogGame()
 	return m, []tea.ProgramOption{tea.WithAltScreen()}
 }

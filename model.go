@@ -5,32 +5,27 @@ import (
 	"time"
 )
 
-const (
-	BoardWidth  = 40
-	BoardHeight = 20
-)
-
 type TickMsg time.Time
 
-type FrogGame struct {
-	Frog     Coord
-	GameOver bool
+type coord struct {
+	x int
+	y int
 }
 
-type Coord struct {
-	X int
-	Y int
+type frogGame struct {
+	frog     coord
+	gameOver bool
 }
 
-func NewFrogGame() FrogGame {
-	frog := Coord{
-		X: 10, // Initial X position
-		Y: 10, // Initial Y position
+func newFrogGame() frogGame {
+	frog := coord{
+		x: 10, // Initial X position
+		y: 10, // Initial Y position
 	}
 
-	return FrogGame{
-		Frog:     frog,
-		GameOver: false,
+	return frogGame{
+		frog:     frog,
+		gameOver: false,
 	}
 }
 
@@ -40,57 +35,57 @@ func tickEvery() tea.Cmd {
 	})
 }
 
-func (f FrogGame) Init() tea.Cmd {
+func (f frogGame) Init() tea.Cmd {
 	return tickEvery()
 }
 
-func (f FrogGame) View() string {
-	if f.GameOver {
+func (f frogGame) View() string {
+	if f.gameOver {
 		return "Game Over!\nPress 'q' to quit."
 	}
 
 	screen := ""
 
-	for i := 0; i < BoardHeight; i++ {
-		for j := 0; j < BoardWidth; j++ {
-			if i == f.Frog.Y && j == f.Frog.X {
+	for i := 0; i < BOARD_HEIGHT; i++ {
+		for j := 0; j < BOARD_WIDTH; j++ {
+			if i == f.frog.y && j == f.frog.x {
 				screen += "🐸"
 			} else {
 				screen += " "
 			}
 		}
 
-		if i != BoardHeight-1 {
+		if i != BOARD_HEIGHT-1 {
 			screen += "\n"
 		}
 	}
 
 	helpMsg := "Use arrow keys to move. Press 'q' to quit."
 
-	return screen + helpMsg
+	return boardStyle.Render(screen) + screen + helpMsg
 }
 
-func (f FrogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg.(type) {
 	case tea.KeyMsg:
 		switch msg.(tea.KeyMsg).String() {
 		case "q":
 			return f, tea.Quit
 		case "up":
-			if f.Frog.Y > 0 {
-				f.Frog.Y--
+			if f.frog.y > 0 {
+				f.frog.y--
 			}
 		case "right":
-			if f.Frog.X < BoardWidth-1 {
-				f.Frog.X++
+			if f.frog.x < BOARD_WIDTH-1 {
+				f.frog.x++
 			}
 		case "down":
-			if f.Frog.Y < BoardHeight-1 {
-				f.Frog.Y++
+			if f.frog.y < BOARD_HEIGHT-1 {
+				f.frog.y++
 			}
 		case "left":
-			if f.Frog.X > 0 {
-				f.Frog.X--
+			if f.frog.x > 0 {
+				f.frog.x--
 			}
 		}
 	case TickMsg:
@@ -99,3 +94,8 @@ func (f FrogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	return f, nil
 }
+
+const (
+	BOARD_WIDTH  = 44
+	BOARD_HEIGHT = 20
+)
