@@ -87,9 +87,21 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.height = msg.Height
+		m.width = msg.Width
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "q", "ctrl+c":
+			return m, tea.Quit
+		}
+	}
 	return m, nil
 }
 
 func (m model) View() string {
-    return "hello ssh world"	
+	s := "hello ssh world\n"
+	s += "press 'q' to quit\n"
+	return s
 }
