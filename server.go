@@ -61,7 +61,6 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 		wish.Fatalln(s, "no active terminal, skipping")
 		return nil, nil
 	}
-	// m := initialModel()
 	m := newSnakeGame()
 	return m, []tea.ProgramOption{tea.WithAltScreen()}
 }
