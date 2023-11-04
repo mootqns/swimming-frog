@@ -76,6 +76,7 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 }
 
 // Just a generic tea.Model to demo terminal information of ssh.
+// Test
 type model struct {
 	term   string
 	width  int
