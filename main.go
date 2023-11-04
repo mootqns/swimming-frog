@@ -21,8 +21,8 @@ import (
 )
 
 const (
-	host = "localhost"
-	port = 23234
+	host = "164.92.75.103"
+	port = 8000
 )
 
 func main() {
@@ -101,8 +101,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	s := "Your term is %s\n"
-	s += "Your window size is x: %d y: %d\n\n"
-	s += "Press 'q' to quit\n"
+	s := "your term is %s\n"
+	s += "your window size is x: %d y: %d\n\n"
+	s += "press 'q' to quit\n"
 	return fmt.Sprintf(s, m.term, m.width, m.height)
 }
