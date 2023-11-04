@@ -8,10 +8,9 @@ import (
 )
 
 var (
-	_       tea.Model = (*model)(nil)
-	color             = termenv.EnvColorProfile().Color
-	keyword           = termenv.Style{}.Foreground(color("204")).Background(color("235")).Styled
-	help              = termenv.Style{}.Foreground(color("241")).Styled
+	color   = termenv.EnvColorProfile().Color
+	keyword = termenv.Style{}.Foreground(color("204")).Background(color("235")).Styled
+	help    = termenv.Style{}.Foreground(color("241")).Styled
 )
 
 type model struct {
@@ -19,11 +18,11 @@ type model struct {
 	quitting  bool
 }
 
-func (m model) Init() tea.Cmd {
+func (m *model) Init() tea.Cmd {
 	return nil
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -44,7 +43,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m model) View() string {
+func (m *model) View() string {
 	if m.quitting {
 		return "Bye!\n"
 	}
