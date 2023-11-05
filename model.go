@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -22,8 +21,6 @@ const (
 
 const (
 	BLANK_CELL = iota
-	SNAKE_CELL
-	PELLET_CELL
 )
 
 type TickMsg time.Time
@@ -34,10 +31,9 @@ type coord struct {
 }
 
 // this is the model used by bubbletea
-type snakeGame struct {
+type frogGame struct {
 	gameBoard [][]int
 	frog      coord
-	pellet    coord
 	score     int
 	gameOver  bool
 
@@ -45,32 +41,26 @@ type snakeGame struct {
 	height int
 }
 
-func newSnakeGame() snakeGame {
+func newFrogGame() frogGame {
 	frog := coord{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT / 2}
 
-	game := snakeGame{
+	game := frogGame{
 		frog:     frog,
 		gameOver: false,
 	}
 
-	game.spawnPellet()
 	game.updateBoard()
 
 	return game
 }
 
-func (s *snakeGame) updateBoard() {
+func (f *frogGame) updateBoard() {
 	gameBoard := [][]int{}
 
 	for i := 0; i < BOARD_HEIGHT; i++ {
 		row := []int{}
 		for j := 0; j < BOARD_WIDTH; j++ {
 			cellType := BLANK_CELL
-			curCell := coord{j, i}
-
-			if curCell == s.pellet {
-				cellType = PELLET_CELL
-			}
 
 			row = append(row, cellType)
 		}
@@ -78,17 +68,7 @@ func (s *snakeGame) updateBoard() {
 		gameBoard = append(gameBoard, row)
 	}
 
-	s.gameBoard = gameBoard
-}
-
-// place pellet at random position that doesn't overlap with snake
-func (s *snakeGame) spawnPellet() {
-	pellet := coord{
-		x: rand.Intn(BOARD_WIDTH),
-		y: rand.Intn(BOARD_HEIGHT),
-	}
-
-	s.pellet = pellet
+	f.gameBoard = gameBoard
 }
 
 func tickEvery() tea.Cmd {
@@ -97,15 +77,15 @@ func tickEvery() tea.Cmd {
 	})
 }
 
-func (s snakeGame) Init() tea.Cmd {
+func (f frogGame) Init() tea.Cmd {
 	return tickEvery()
 }
 
-func (s snakeGame) View() string {
+func (f frogGame) View() string {
 	scoreLabel := scoreStyle.Render("score")
-	scoreText := fmt.Sprintf("\n%s: %d\n\n", scoreLabel, s.score)
+	scoreText := fmt.Sprintf("\n%s: %d\n\n", scoreLabel, f.score)
 
-	if s.gameOver {
+	if f.gameOver {
 		return gameOverStyle.Render(gameOverText) + scoreText + "ctrl+c to quit\n"
 	}
 
@@ -113,7 +93,7 @@ func (s snakeGame) View() string {
 
 	for i := 0; i < BOARD_HEIGHT; i++ {
 		for j := 0; j < BOARD_WIDTH; j++ {
-			if i == s.frog.y && j == s.frog.x {
+			if i == f.frog.y && j == f.frog.x {
 				screen += "🐸"
 			} else {
 				screen += " "
@@ -125,78 +105,39 @@ func (s snakeGame) View() string {
 		}
 	}
 
-	helpMsg := "arrow keys to move\nesc to quit\n"
+	helpMsg := "arrow keys to move\ncontrol + c\n"
 
 	return boardStyle.Render(screen) + scoreText + helpMsg
 }
 
-func (s snakeGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		s.width = msg.Width
-		s.height = msg.Height
+		f.width = msg.Width
+		f.height = msg.Height
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
-			return s, tea.Quit
-
-		// when moving snake, don't allow movement in opposite direction
-		// this is done by checking if snake body part directly behind head
-		// is in the direction player is trying to move
+			return f, tea.Quit
 		case "q":
-			return s, tea.Quit
+			return f, tea.Quit
 		case "up":
-			if s.frog.y > 0 {
-				s.frog.y--
+			if f.frog.y > 0 {
+				f.frog.y--
 			}
 		case "right":
-			if s.frog.x < BOARD_WIDTH-1 {
-				s.frog.x++
+			if f.frog.x < BOARD_WIDTH-1 {
+				f.frog.x++
 			}
 		case "down":
-			if s.frog.y < BOARD_HEIGHT-1 {
-				s.frog.y++
+			if f.frog.y < BOARD_HEIGHT-1 {
+				f.frog.y++
 			}
 		case "left":
-			if s.frog.x > 0 {
-				s.frog.x--
+			if f.frog.x > 0 {
+				f.frog.x--
 			}
 		}
-		// case TickMsg:
-		// 	// move snake head in direction
-		// 	prevSnakePartPos := s.snake.body[0]
-
-		// 	if s.snake.body[0].x < 0 || s.snake.body[0].x >= BOARD_WIDTH ||
-		// 		s.snake.body[0].y < 0 || s.snake.body[0].y >= BOARD_HEIGHT ||
-		// 		s.snake.isHeadCollidingWithBody() {
-
-		// 		s.gameOver = true
-		// 		break
-		// 	}
-
-		// 	atePellet := s.snake.body[0] == s.pellet
-
-		// 	/*
-		// 		move the rest of the snake
-		// 		temporarily save position of current part as prevPos
-		// 		move part to prevSnakePartPos
-		// 		set prevSnakePartPos to prevPos for the next iteration
-		// 	*/
-		// 	for i := 1; i < len(s.snake.body); i++ {
-		// 		prevPos := s.snake.body[i]
-		// 		s.snake.body[i] = prevSnakePartPos
-		// 		prevSnakePartPos = prevPos
-		// 	}
-
-		// 	if atePellet {
-		// 		s.snake.body = append(s.snake.body, prevSnakePartPos)
-		// 		s.spawnPellet()
-		// 		s.score++
-		// 	}
-
-		//s.updateBoard()
-
-		// return s, tickEvery()
 	}
-	return s, nil
+	return f, nil
 }
