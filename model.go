@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	BOARD_WIDTH  = 70
+	BOARD_WIDTH  = 50
 	BOARD_HEIGHT = 30
 )
 
@@ -175,7 +175,15 @@ func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		f.score += 10
 		f.frog.y += BOARD_HEIGHT - 1
 	}
-	
+
+	for i := 0; i < BOARD_HEIGHT; i++ {
+		for j := 0; j < BOARD_WIDTH; j++ {
+			if f.gameBoard[i][j] == LOG_CELL && i == f.frog.y && j == f.frog.x {
+				f.gameOver = true
+			}
+		}
+	}
+
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		f.width = msg.Width
