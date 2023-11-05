@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"time"
-
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -44,7 +43,16 @@ type frogGame struct {
 	score       int
 	gameOver    bool
 	startScreen bool
-	testLog     wood
+	logOne     wood
+	logTwo	 wood
+	logThree	wood
+	logFour	 wood
+	logFive	 wood
+	logSix	 wood
+	logSeven	 wood
+	logEight	 wood
+	logNine	 wood
+	logTen	 wood
 
 	width  int
 	height int
@@ -53,18 +61,107 @@ type frogGame struct {
 func newFrogGame() frogGame {
 	frog := coord{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT - 1}
 
-	testLog := wood{
+	logOne := wood{
 		body: []coord{
-			{x: 1, y: 4},
-			{x: 2, y: 4},
-			{x: 3, y: 4},
+			{x: 1, y: 0},
+			{x: 2, y: 0},
+			{x: 3, y: 0},
 		},
-
 		direction: RIGHT,
+	}
+	
+	logTwo := wood{
+		body: []coord{
+			{x: 67, y: BOARD_HEIGHT - 3},
+			{x: 68, y: BOARD_HEIGHT - 3},
+			{x: 69, y: BOARD_HEIGHT - 3},
+		},
+		direction: LEFT,
+	}
+	
+	logThree := wood{
+		body: []coord{
+			{x: 9, y: 3},
+			{x: 10, y: 3},
+			{x: 11, y: 3},
+		},
+		direction: RIGHT,
+	}
+	
+	logFour := wood{
+		body: []coord{
+			{x: 15, y: BOARD_HEIGHT - 6},
+			{x: 16, y: BOARD_HEIGHT - 6},
+			{x: 17, y: BOARD_HEIGHT - 6},
+		},
+		direction: RIGHT,
+	}
+	
+	logFive := wood{
+		body: []coord{
+			{x: 54, y: 6},
+			{x: 55, y: 6},
+			{x: 56, y: 6},
+		},
+		direction: RIGHT,
+	}
+	
+	logSix := wood{
+		body: []coord{
+			{x: 47, y: BOARD_HEIGHT - 9},
+			{x: 48, y: BOARD_HEIGHT - 9},
+			{x: 49, y: BOARD_HEIGHT - 9},
+		},
+		direction: LEFT,
+	}
+	
+	logSeven := wood{
+		body: []coord{
+			{x: 23, y: 9},
+			{x: 24, y: 9},
+			{x: 25, y: 9},
+		},
+		direction: RIGHT,
+	}
+	
+	logEight := wood{
+		body: []coord{
+			{x: 10, y: BOARD_HEIGHT - 12},
+			{x: 11, y: BOARD_HEIGHT - 12},
+			{x: 12, y: BOARD_HEIGHT - 12},
+		},
+		direction: RIGHT,
+	}
+	
+	logNine := wood{
+		body: []coord{
+			{x: 62, y: 12},
+			{x: 63, y: 12},
+			{x: 64, y: 12},
+		},
+		direction: RIGHT,
+	}
+	
+	logTen := wood{
+		body: []coord{
+			{x: 49, y: BOARD_HEIGHT - 15},
+			{x: 50, y: BOARD_HEIGHT - 15},
+			{x: 51, y: BOARD_HEIGHT - 15},
+		},
+		direction: LEFT,
 	}
 
 	game := frogGame{
-		testLog:     testLog,
+		logOne:     logOne,
+		logTwo:    logTwo,
+		logThree:	logThree,
+		logFour:	logFour,
+		logFive:	logFive,
+		logSix:	logSix,
+		logSeven:	logSeven,
+		logEight:	logEight,
+		logNine:	logNine,
+		logTen:	logTen,
 		frog:        frog,
 		startScreen: true,
 		gameOver:    false,
@@ -73,7 +170,7 @@ func newFrogGame() frogGame {
 	game.updateBoard()
 
 	return game
-}
+} 
 
 func (f *frogGame) updateBoard() {
 	gameBoard := [][]int{}
@@ -85,7 +182,9 @@ func (f *frogGame) updateBoard() {
 
 			curCell := coord{j, i}
 
-			if f.testLog.coordInBody(curCell) {
+			if f.logOne.coordInBody(curCell) || f.logTwo.coordInBody(curCell) || f.logThree.coordInBody(curCell) || f.logFour.coordInBody(curCell) ||
+                f.logFive.coordInBody(curCell) || f.logSix.coordInBody(curCell) || f.logSeven.coordInBody(curCell) || f.logEight.coordInBody(curCell) ||
+                f.logNine.coordInBody(curCell) || f.logTen.coordInBody(curCell) {
 				cellType = LOG_CELL
 			}
 
@@ -154,14 +253,64 @@ func (f frogGame) View() string {
 		}
 	}
 
-	if (f.testLog.body[0].x > 70 || f.testLog.body[0].x < -2) {
-		f.testLog.body[0].x = 1
-		f.testLog.body[0].y = 4
-		f.testLog.body[1].x = 2
-		f.testLog.body[1].y = 4
-		f.testLog.body[2].x = 3
-		f.testLog.body[2].y = 4
-
+	if (f.logOne.body[0].x > 70 || f.logOne.body[0].x < -2) {
+		f.logOne.body[0].x = 1
+		f.logOne.body[1].x = 2
+		f.logOne.body[2].x = 3
+	}
+	
+	if (f.logTwo.body[0].x > 70 || f.logTwo.body[0].x < -2) {
+		f.logTwo.body[0].x = 67
+		f.logTwo.body[1].x = 68
+		f.logTwo.body[2].x = 69
+	}
+	
+	if (f.logThree.body[0].x > 70 || f.logThree.body[0].x < -2) {
+		f.logThree.body[0].x = 1
+		f.logThree.body[1].x = 2
+		f.logThree.body[2].x = 3
+	}
+	
+	if (f.logFour.body[0].x > 70 || f.logFour.body[0].x < -2) {
+		f.logFour.body[0].x = 67
+		f.logFour.body[1].x = 68
+		f.logFour.body[2].x = 69
+	}
+	
+	if (f.logFive.body[0].x > 70 || f.logFive.body[0].x < -2) {
+		f.logFive.body[0].x = 1
+		f.logFive.body[1].x = 2
+		f.logFive.body[2].x = 3
+	}
+	
+	if (f.logSix.body[0].x > 70 || f.logSix.body[0].x < -2) {
+		f.logSix.body[0].x = 67
+		f.logSix.body[1].x = 68
+		f.logSix.body[2].x = 69
+	}
+	
+	if (f.logSeven.body[0].x > 70 || f.logSeven.body[0].x < -2) {
+		f.logSeven.body[0].x = 1
+		f.logSeven.body[1].x = 2
+		f.logSeven.body[2].x = 3
+	}
+	
+	if (f.logEight.body[0].x > 70 || f.logEight.body[0].x < -2) {
+		f.logEight.body[0].x = 67
+		f.logEight.body[1].x = 68
+		f.logEight.body[2].x = 69
+	}
+	
+	if (f.logNine.body[0].x > 70 || f.logNine.body[0].x < -2) {
+		f.logNine.body[0].x = 1
+		f.logNine.body[1].x = 2
+		f.logNine.body[2].x = 3
+	}
+	
+	if (f.logTen.body[0].x > 70 || f.logTen.body[0].x < -2) {
+		f.logTen.body[0].x = 67
+		f.logTen.body[1].x = 68
+		f.logTen.body[2].x = 69
 	}
 
 	helpMsg := "arrows move | q quit\n"
@@ -203,19 +352,154 @@ func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case TickMsg:
 
-		prevWoodPartPos := f.testLog.body[0]
+		prevWoodOnePartPos := f.logOne.body[0]
 
-		switch f.testLog.direction {
+		switch f.logOne.direction {
 		case RIGHT:
-			f.testLog.body[0].x++
+			f.logOne.body[0].x++
 		case LEFT:
-			f.testLog.body[0].x--
+			f.logOne.body[0].x--
 		}
 
-		for i := 1; i < len(f.testLog.body); i++ {
-			prevPos := f.testLog.body[i]
-			f.testLog.body[i] = prevWoodPartPos
-			prevWoodPartPos = prevPos
+		for i := 1; i < len(f.logOne.body); i++ {
+			prevPosOne := f.logOne.body[i]
+			f.logOne.body[i] = prevWoodOnePartPos
+			prevWoodOnePartPos = prevPosOne
+		}
+
+		prevWoodTwoPartPos := f.logTwo.body[0]
+
+		switch f.logTwo.direction {
+		case RIGHT:
+			f.logTwo.body[0].x++
+		case LEFT:
+			f.logTwo.body[0].x--
+		}
+
+		for i := 1; i < len(f.logTwo.body); i++ {
+			prevPosTwo := f.logTwo.body[i]
+			f.logTwo.body[i] = prevWoodTwoPartPos
+			prevWoodTwoPartPos = prevPosTwo
+		}
+
+		prevWoodThreePartPos := f.logThree.body[0]
+
+		switch f.logThree.direction {
+		case RIGHT:
+		f.logThree.body[0].x++
+		case LEFT:
+		f.logThree.body[0].x--
+		}
+
+		for i := 1; i < len(f.logThree.body); i++ {
+		prevPosThree := f.logThree.body[i]
+		f.logThree.body[i] = prevWoodThreePartPos
+		prevWoodThreePartPos = prevPosThree
+		}
+
+		prevWoodFourPartPos := f.logFour.body[0]
+
+		switch f.logFour.direction {
+		case RIGHT:
+		f.logFour.body[0].x++
+		case LEFT:
+		f.logFour.body[0].x--
+		}
+
+		for i := 1; i < len(f.logFour.body); i++ {
+		prevPosFour := f.logFour.body[i]
+		f.logFour.body[i] = prevWoodFourPartPos
+		prevWoodFourPartPos = prevPosFour
+		}
+
+		prevWoodFivePartPos := f.logFive.body[0]
+
+		switch f.logFive.direction {
+		case RIGHT:
+		f.logFive.body[0].x++
+		case LEFT:
+		f.logFive.body[0].x--
+		}
+
+		for i := 1; i < len(f.logFive.body); i++ {
+		prevPosFive := f.logFive.body[i]
+		f.logFive.body[i] = prevWoodFivePartPos
+		prevWoodFivePartPos = prevPosFive
+		}
+
+		prevWoodSixPartPos := f.logSix.body[0]
+
+		switch f.logSix.direction {
+		case RIGHT:
+		f.logSix.body[0].x++
+		case LEFT:
+		f.logSix.body[0].x--
+		}
+
+		for i := 1; i < len(f.logSix.body); i++ {
+		prevPosSix := f.logSix.body[i]
+		f.logSix.body[i] = prevWoodSixPartPos
+		prevWoodSixPartPos = prevPosSix
+		}
+
+		prevWoodSevenPartPos := f.logSeven.body[0]
+
+		switch f.logSeven.direction {
+		case RIGHT:
+		f.logSeven.body[0].x++
+		case LEFT:
+		f.logSeven.body[0].x--
+		}
+
+		for i := 1; i < len(f.logSeven.body); i++ {
+		prevPosSeven := f.logSeven.body[i]
+		f.logSeven.body[i] = prevWoodSevenPartPos
+		prevWoodSevenPartPos = prevPosSeven
+		}
+
+		prevWoodEightPartPos := f.logEight.body[0]
+
+		switch f.logEight.direction {
+		case RIGHT:
+		f.logEight.body[0].x++
+		case LEFT:
+		f.logEight.body[0].x--
+		}
+
+		for i := 1; i < len(f.logEight.body); i++ {
+		prevPosEight := f.logEight.body[i]
+		f.logEight.body[i] = prevWoodEightPartPos
+		prevWoodEightPartPos = prevPosEight
+		}
+
+		prevWoodNinePartPos := f.logNine.body[0]
+
+		switch f.logNine.direction {
+		case RIGHT:
+		f.logNine.body[0].x++
+		case LEFT:
+		f.logNine.body[0].x--
+		}
+
+		for i := 1; i < len(f.logNine.body); i++ {
+		prevPosNine := f.logNine.body[i]
+		f.logNine.body[i] = prevWoodNinePartPos
+		prevWoodNinePartPos = prevPosNine
+		}
+
+		prevWoodTenPartPos := f.logTen.body[0]
+
+		switch f.logTen.direction {
+		case RIGHT:
+		f.logTen.body[0].x++
+		case LEFT:
+		f.logTen.body[0].x--
+		}
+
+		for i := 1; i < len(f.logTen.body); i++ {
+		prevPosTen := f.logTen.body[i]
+		f.logTen.body[i] = prevWoodTenPartPos
+		prevWoodTenPartPos = prevPosTen
 		}
 
 		f.updateBoard()
