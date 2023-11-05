@@ -14,7 +14,15 @@ const (
 )
 
 const (
+	UP = iota
+	RIGHT
+	DOWN
+	LEFT
+)
+
+const (
 	BLANK_CELL = iota
+	LOG_CELL
 )
 
 type TickMsg time.Time
@@ -24,13 +32,19 @@ type coord struct {
 	y int
 }
 
+type wood struct {
+	body      []coord
+	direction int
+}
+
 // this is the model used by bubbletea
 type frogGame struct {
-	gameBoard [][]int
-	frog      coord
-	score     int
-	gameOver  bool
+	gameBoard   [][]int
+	frog        coord
+	score       int
+	gameOver    bool
 	startScreen bool
+	testLog     wood
 
 	width  int
 	height int
@@ -39,10 +53,21 @@ type frogGame struct {
 func newFrogGame() frogGame {
 	frog := coord{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT / 2}
 
+	testLog := wood{
+		body: []coord{
+			{x: 1, y: 4},
+			{x: 2, y: 4},
+			{x: 3, y: 4},
+		},
+
+		direction: RIGHT,
+	}
+
 	game := frogGame{
-		frog:     frog,
+		testLog:     testLog,
+		frog:        frog,
 		startScreen: true,
-		gameOver: false,
+		gameOver:    false,
 	}
 
 	game.updateBoard()
@@ -58,6 +83,12 @@ func (f *frogGame) updateBoard() {
 		for j := 0; j < BOARD_WIDTH; j++ {
 			cellType := BLANK_CELL
 
+			curCell := coord{j, i}
+
+			if f.testLog.coordInBody(curCell) {
+				cellType = LOG_CELL
+			}
+
 			row = append(row, cellType)
 		}
 
@@ -65,6 +96,16 @@ func (f *frogGame) updateBoard() {
 	}
 
 	f.gameBoard = gameBoard
+}
+
+func (w wood) coordInBody(c coord) bool {
+	for _, woodPart := range w.body {
+		if woodPart == c {
+			return true
+		}
+	}
+
+	return false
 }
 
 func tickEvery() tea.Cmd {
@@ -84,9 +125,9 @@ func (f frogGame) View() string {
 	scoreLabel := scoreStyle.Render("score")
 	scoreText := fmt.Sprintf("\n%s: %d\n\n", scoreLabel, f.score)
 
-	if(f.startScreen) {
-		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, 
-				startBorder.Render(startScreenStyle.Render("> Frog Game") + 
+	if f.startScreen {
+		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center,
+			startBorder.Render(startScreenStyle.Render("> Frog Game")+
 				"\n\nenter to play"))
 	}
 
@@ -100,6 +141,8 @@ func (f frogGame) View() string {
 		for j := 0; j < BOARD_WIDTH; j++ {
 			if i == f.frog.y && j == f.frog.x {
 				screen += "🐸"
+			} else if f.gameBoard[i][j] == LOG_CELL {
+				screen += logStyle.Render(" ")
 			} else {
 				screen += " "
 			}
@@ -112,7 +155,7 @@ func (f frogGame) View() string {
 
 	helpMsg := "arrows to move | ctrl+c/q to quit\n"
 
-	return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, boardStyle.Render(screen) + scoreText + helpMsg)
+	return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, boardStyle.Render(screen)+scoreText+helpMsg)
 }
 
 func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -127,7 +170,7 @@ func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q":
 			return f, tea.Quit
 		case "enter":
-			f.startScreen = false;
+			f.startScreen = false
 		case "up":
 			if f.frog.y > 0 {
 				f.frog.y--
@@ -145,6 +188,26 @@ func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				f.frog.x--
 			}
 		}
+	case TickMsg:
+
+		prevWoodPartPos := f.testLog.body[0]
+
+		switch f.testLog.direction {
+		case RIGHT:
+			f.testLog.body[0].x += 1
+		case LEFT:
+			f.testLog.body[0].x -= 1
+		}
+
+		for i := 1; i < len(f.testLog.body); i++ {
+			prevPos := f.testLog.body[i]
+			f.testLog.body[i] = prevWoodPartPos
+			prevWoodPartPos = prevPos
+		}
+
+		f.updateBoard()
+
+		return f, tickEvery()
 	}
 	return f, nil
 }

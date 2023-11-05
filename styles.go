@@ -6,6 +6,11 @@ var baseStyle = lipgloss.NewStyle().
 	Width(2).
 	Height(1)
 
+var logStyle = lipgloss.NewStyle().
+	Width(2).
+	Height(1).
+	Background(lipgloss.Color("#996633"))
+
 var frogStyle = lipgloss.NewStyle().
 	Width(2).
 	Height(1).
@@ -41,5 +46,5 @@ var startBorder = lipgloss.NewStyle().
 	BorderStyle(lipgloss.RoundedBorder()).
 	BorderForeground(lipgloss.Color("83")).
 	Align(lipgloss.Center)
-					
+
 var gameOverText = "game over"
