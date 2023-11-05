@@ -127,12 +127,13 @@ func (f frogGame) View() string {
 
 	if f.startScreen {
 		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center,
-			startBorder.Render(startScreenStyle.Render("> Frog Game")+
-				"\n\nenter to play"))
+			startBorder.Render(menuScreenStyle.Render(menuTextStyle.Render("> frog game"))+
+				"\n\npress enter to play"))
 	}
 
 	if f.gameOver {
-		return gameOverStyle.Render(gameOverText) + scoreText + "ctrl+c/q to quit\n"
+		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, 
+			startBorder.Render(menuScreenStyle.Render(menuTextStyle.Render("> game over")) + scoreText + "q quit\n"))
 	}
 
 	screen := ""
@@ -153,7 +154,7 @@ func (f frogGame) View() string {
 		}
 	}
 
-	helpMsg := "arrows to move | ctrl+c/q to quit\n"
+	helpMsg := "arrows move | q quit\n"
 
 	return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, boardStyle.Render(screen)+scoreText+helpMsg)
 }
@@ -171,6 +172,8 @@ func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return f, tea.Quit
 		case "enter":
 			f.startScreen = false
+		case "c":
+			f.gameOver = true
 		case "up":
 			if f.frog.y > 0 {
 				f.frog.y--
@@ -194,9 +197,9 @@ func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		switch f.testLog.direction {
 		case RIGHT:
-			f.testLog.body[0].x += 1
+			f.testLog.body[0].x++
 		case LEFT:
-			f.testLog.body[0].x -= 1
+			f.testLog.body[0].x--
 		}
 
 		for i := 1; i < len(f.testLog.body); i++ {

@@ -25,26 +25,25 @@ var pelletStyle = lipgloss.NewStyle().
 
 var boardStyle = lipgloss.NewStyle().
 	Border(lipgloss.RoundedBorder()).
-	BorderForeground(lipgloss.Color("#bf00ff"))
-
-var gameOverStyle = lipgloss.NewStyle().
-	Foreground(lipgloss.Color("#a32a2a"))
+	BorderForeground(lipgloss.Color("#d79921"))
 
 var scoreStyle = lipgloss.NewStyle().
 	Bold(true).
-	Foreground(lipgloss.Color("#14db8f"))
+	Foreground(lipgloss.Color("#98971a"))
 
-var startScreenStyle = lipgloss.NewStyle().
+var menuScreenStyle = lipgloss.NewStyle().
 	Bold(true).
-	Foreground(lipgloss.Color("#FAFAFA")).
-	Background(lipgloss.Color("#7D56F4")).
+	Foreground(lipgloss.Color("#79740e")).
+	Background(lipgloss.Color("#98971a")).
 	Margin(3).
 	Padding(2).
 	Width(60)
 
 var startBorder = lipgloss.NewStyle().
 	BorderStyle(lipgloss.RoundedBorder()).
-	BorderForeground(lipgloss.Color("83")).
+	BorderForeground(lipgloss.Color("#d79921")).
 	Align(lipgloss.Center)
 
-var gameOverText = "game over"
+var menuTextStyle = lipgloss.NewStyle().
+	Bold(true).
+	Foreground(lipgloss.Color("#fbf1c7"))
