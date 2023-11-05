@@ -39,6 +39,10 @@ var menuTextStyle = lipgloss.NewStyle().
 	Foreground(lipgloss.Color("#fbf1c7"))
 
 var altTextStyle = lipgloss.NewStyle().
-	Bold(true).
+	Italic(true).
 	Foreground(lipgloss.Color("#fbf1c7")).
 	MarginBottom(2)
+
+var italicsTextStyle = lipgloss.NewStyle().
+	Italic(true).
+	Foreground(lipgloss.Color("#fbf1c7"))

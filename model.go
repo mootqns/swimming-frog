@@ -134,7 +134,7 @@ func (f frogGame) View() string {
 
 	if f.gameOver {
 		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center,
-			startBorder.Render(menuScreenStyle.Render(menuTextStyle.Render("> game over"))+scoreText+"q quit\n"))
+			startBorder.Render(menuScreenStyle.Render(menuTextStyle.Render("> game over"))+scoreText+italicsTextStyle.Render("q quit\n")))
 	}
 
 	screen := ""
@@ -167,7 +167,7 @@ func (f frogGame) View() string {
 
 	helpMsg := "arrows move | q quit\n"
 
-	return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, boardStyle.Render(screen)+scoreText+helpMsg)
+	return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, boardStyle.Render(screen)+scoreText+italicsTextStyle.Render(helpMsg))
 }
 
 func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
