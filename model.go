@@ -129,12 +129,12 @@ func (f frogGame) View() string {
 	if f.startScreen {
 		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center,
 			startBorder.Render(menuScreenStyle.Render(menuTextStyle.Render("> frog game"))+
-				"\n\npress enter to play"))
+				altTextStyle.Render("\n\npress enter to play")))
 	}
 
 	if f.gameOver {
-		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, 
-			startBorder.Render(menuScreenStyle.Render(menuTextStyle.Render("> game over")) + scoreText + "q quit\n"))
+		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center,
+			startBorder.Render(menuScreenStyle.Render(menuTextStyle.Render("> game over"))+scoreText+"q quit\n"))
 	}
 
 	screen := ""
@@ -155,7 +155,7 @@ func (f frogGame) View() string {
 		}
 	}
 
-	if (f.testLog.body[0].x > 70 || f.testLog.body[0].x < -2) {
+	if f.testLog.body[0].x > 70 || f.testLog.body[0].x < -2 {
 		f.testLog.body[0].x = 1
 		f.testLog.body[0].y = 4
 		f.testLog.body[1].x = 2
@@ -171,7 +171,7 @@ func (f frogGame) View() string {
 }
 
 func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if(f.frog.y == 1) {
+	if f.frog.y == 1 {
 		f.score += 10
 		f.frog.y += BOARD_HEIGHT - 1
 	}

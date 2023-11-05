@@ -13,8 +13,9 @@ var logStyle = lipgloss.NewStyle().
 	Background(lipgloss.Color("#996633"))
 
 var boardStyle = lipgloss.NewStyle().
-	Border(lipgloss.ThickBorder()).
-	BorderForeground(lipgloss.Color("#d79921"))
+	Border(lipgloss.RoundedBorder()).
+	BorderForeground(lipgloss.Color("#d79921")).
+	BorderBackground(lipgloss.Color("#d79921"))
 
 var scoreStyle = lipgloss.NewStyle().
 	Bold(true).
@@ -24,9 +25,9 @@ var menuScreenStyle = lipgloss.NewStyle().
 	Bold(true).
 	Foreground(lipgloss.Color("#79740e")).
 	Background(lipgloss.Color("#98971a")).
-	Margin(3).
-	Padding(2).
-	Width(60)
+	Margin(1).
+	Padding(1).
+	Width(50)
 
 var startBorder = lipgloss.NewStyle().
 	BorderStyle(lipgloss.RoundedBorder()).
@@ -36,3 +37,8 @@ var startBorder = lipgloss.NewStyle().
 var menuTextStyle = lipgloss.NewStyle().
 	Bold(true).
 	Foreground(lipgloss.Color("#fbf1c7"))
+
+var altTextStyle = lipgloss.NewStyle().
+	Bold(true).
+	Foreground(lipgloss.Color("#fbf1c7")).
+	MarginBottom(2)
