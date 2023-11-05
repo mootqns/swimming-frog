@@ -51,7 +51,7 @@ type frogGame struct {
 }
 
 func newFrogGame() frogGame {
-	frog := coord{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT / 2}
+	frog := coord{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT - 1}
 
 	testLog := wood{
 		body: []coord{
@@ -152,6 +152,16 @@ func (f frogGame) View() string {
 		if i != BOARD_HEIGHT-1 {
 			screen += "\n"
 		}
+	}
+
+	if (f.testLog.body[0].x > 70 || f.testLog.body[0].x < -2) {
+		f.testLog.body[0].x = 1
+		f.testLog.body[0].y = 4
+		f.testLog.body[1].x = 2
+		f.testLog.body[1].y = 4
+		f.testLog.body[2].x = 3
+		f.testLog.body[2].y = 4
+
 	}
 
 	helpMsg := "arrows move | q quit\n"
