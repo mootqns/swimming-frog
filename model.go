@@ -154,7 +154,7 @@ func (f frogGame) View() string {
 		}
 	}
 
-	if (f.testLog.body[0].x > 44 || f.testLog.body[0].x < -2) {
+	if (f.testLog.body[0].x > 70 || f.testLog.body[0].x < -2) {
 		f.testLog.body[0].x = 1
 		f.testLog.body[0].y = 4
 		f.testLog.body[1].x = 2
