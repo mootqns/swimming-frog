@@ -176,17 +176,19 @@ func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case TickMsg:
 
+		prevWoodPartPos := f.testLog.body[0]
+
 		switch f.testLog.direction {
 		case RIGHT:
-			// for i := len(f.testLog.body) - 1; i > 0; i-- {
-			// 	f.testLog.body[i] = f.testLog.body[i+1]
-			// }
 			f.testLog.body[0].x += 1
 		case LEFT:
-			// for i := len(f.testLog.body) - 1; i > 0; i-- {
-			// 	f.testLog.body[i] = f.testLog.body[i-1]
-			// }
 			f.testLog.body[0].x -= 1
+		}
+
+		for i := 1; i < len(f.testLog.body); i++ {
+			prevPos := f.testLog.body[i]
+			f.testLog.body[i] = prevWoodPartPos
+			prevWoodPartPos = prevPos
 		}
 		
 		f.updateBoard()
