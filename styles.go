@@ -6,6 +6,11 @@ var baseStyle = lipgloss.NewStyle().
 	Width(2).
 	Height(1)
 
+var logStyle = lipgloss.NewStyle().
+	Width(2).
+	Height(1).
+	Background(lipgloss.Color("#996633"))
+
 var snakeStyle = lipgloss.NewStyle().
 	Width(2).
 	Height(1).
