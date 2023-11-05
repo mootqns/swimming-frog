@@ -6,3 +6,7 @@ This project is built entirely in Go on the Charm suite of tools, and hosted on 
 
 To try it run:   
 `ssh mootqns.me -p 8000`
+
+# Gameplay
+
+![Swimmer-Frog](https://github.com/mootqns/tui-ssh-game/assets/96968627/35712f86-b4bd-42e2-beac-3711ea3204b4)
