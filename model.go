@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	BOARD_WIDTH  = 70
+	BOARD_WIDTH  = 50
 	BOARD_HEIGHT = 30
 )
 
@@ -221,18 +221,19 @@ func (f frogGame) View() string {
 	if f.width == 0 {
 		return "loading"
 	}
+
 	scoreLabel := scoreStyle.Render("score")
 	scoreText := fmt.Sprintf("\n%s: %d\n\n", scoreLabel, f.score)
 
 	if f.startScreen {
 		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center,
 			startBorder.Render(menuScreenStyle.Render(menuTextStyle.Render("> frog game"))+
-				"\n\npress enter to play"))
+				altTextStyle.Render("\n\npress enter to play")))
 	}
 
 	if f.gameOver {
-		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, 
-			startBorder.Render(menuScreenStyle.Render(menuTextStyle.Render("> game over")) + scoreText + "q quit\n"))
+		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center,
+			startBorder.Render(menuScreenStyle.Render(menuTextStyle.Render("> game over"))+scoreText+italicsTextStyle.Render("q quit\n")))
 	}
 
 	screen := ""
@@ -315,10 +316,23 @@ func (f frogGame) View() string {
 
 	helpMsg := "arrows move | q quit\n"
 
-	return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, boardStyle.Render(screen)+scoreText+helpMsg)
+	return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, boardStyle.Render(screen)+scoreText+italicsTextStyle.Render(helpMsg))
 }
 
 func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if f.frog.y == 1 {
+		f.score += 10
+		f.frog.y += BOARD_HEIGHT - 1
+	}
+
+	for i := 0; i < BOARD_HEIGHT; i++ {
+		for j := 0; j < BOARD_WIDTH; j++ {
+			if f.gameBoard[i][j] == LOG_CELL && i == f.frog.y && j == f.frog.x {
+				f.gameOver = true
+			}
+		}
+	}
+
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		f.width = msg.Width
