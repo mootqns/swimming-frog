@@ -122,6 +122,7 @@ func (f frogGame) View() string {
 	if f.width == 0 {
 		return "loading"
 	}
+
 	scoreLabel := scoreStyle.Render("score")
 	scoreText := fmt.Sprintf("\n%s: %d\n\n", scoreLabel, f.score)
 
@@ -170,6 +171,11 @@ func (f frogGame) View() string {
 }
 
 func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if(f.frog.y == 1) {
+		f.score += 10
+		f.frog.y += BOARD_HEIGHT - 1
+	}
+	
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		f.width = msg.Width

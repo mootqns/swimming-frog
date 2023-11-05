@@ -12,20 +12,8 @@ var logStyle = lipgloss.NewStyle().
 	Height(1).
 	Background(lipgloss.Color("#996633"))
 
-var frogStyle = lipgloss.NewStyle().
-	Width(2).
-	Height(1).
-	Background(lipgloss.Color("#14db8f"))
-
-var pelletStyle = lipgloss.NewStyle().
-	Width(2).
-	Height(1).
-	Bold(true).
-	Background(lipgloss.Color("#db1481")).
-	AlignHorizontal(lipgloss.Center)
-
 var boardStyle = lipgloss.NewStyle().
-	Border(lipgloss.RoundedBorder()).
+	Border(lipgloss.ThickBorder()).
 	BorderForeground(lipgloss.Color("#d79921"))
 
 var scoreStyle = lipgloss.NewStyle().
