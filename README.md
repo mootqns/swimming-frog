@@ -5,7 +5,7 @@ Text-based user interface, crossy road style game with capability to ssh in.
 This project is built entirely in Go on the Charm suite of tools, and hosted on a Digital Ocean droplet
 
 To try it run:   
-```ssh mootqns.me -p 8000```
+```bash ssh mootqns.me -p 8000```
 
 # gameplay
 ![start-swimmer](https://github.com/mootqns/tui-ssh-game/assets/96968627/2212208c-d753-4dec-ac84-0fbe0fa78707)
