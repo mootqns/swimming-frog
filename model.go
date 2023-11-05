@@ -51,7 +51,7 @@ type frogGame struct {
 }
 
 func newFrogGame() frogGame {
-	frog := coord{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT - 1}
+	frog := coord{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT / 2}
 
 	testLog := wood{
 		body: []coord{
@@ -145,7 +145,7 @@ func (f frogGame) View() string {
 			} else if f.gameBoard[i][j] == LOG_CELL {
 				screen += logStyle.Render(" ")
 			} else {
-				screen += " "
+				screen += baseStyle.Render(" ")
 			}
 		}
 

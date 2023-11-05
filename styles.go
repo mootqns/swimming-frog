@@ -4,7 +4,8 @@ import "github.com/charmbracelet/lipgloss"
 
 var baseStyle = lipgloss.NewStyle().
 	Width(2).
-	Height(1)
+	Height(1).
+	Background(lipgloss.Color("#458588"))
 
 var logStyle = lipgloss.NewStyle().
 	Width(2).
