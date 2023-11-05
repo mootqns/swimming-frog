@@ -6,7 +6,7 @@ var baseStyle = lipgloss.NewStyle().
 	Width(2).
 	Height(1)
 
-var snakeStyle = lipgloss.NewStyle().
+var frogStyle = lipgloss.NewStyle().
 	Width(2).
 	Height(1).
 	Background(lipgloss.Color("#14db8f"))
@@ -29,4 +29,17 @@ var scoreStyle = lipgloss.NewStyle().
 	Bold(true).
 	Foreground(lipgloss.Color("#14db8f"))
 
+var startScreenStyle = lipgloss.NewStyle().
+	Bold(true).
+	Foreground(lipgloss.Color("#FAFAFA")).
+	Background(lipgloss.Color("#7D56F4")).
+	Margin(3).
+	Padding(2).
+	Width(60)
+
+var startBorder = lipgloss.NewStyle().
+	BorderStyle(lipgloss.RoundedBorder()).
+	BorderForeground(lipgloss.Color("83")).
+	Align(lipgloss.Center)
+					
 var gameOverText = "game over"

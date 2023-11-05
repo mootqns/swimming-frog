@@ -5,18 +5,12 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 const (
-	BOARD_WIDTH  = 44
-	BOARD_HEIGHT = 20
-)
-
-const (
-	UP = iota
-	RIGHT
-	DOWN
-	LEFT
+	BOARD_WIDTH  = 70
+	BOARD_HEIGHT = 30
 )
 
 const (
@@ -36,6 +30,7 @@ type frogGame struct {
 	frog      coord
 	score     int
 	gameOver  bool
+	startScreen bool
 
 	width  int
 	height int
@@ -46,6 +41,7 @@ func newFrogGame() frogGame {
 
 	game := frogGame{
 		frog:     frog,
+		startScreen: true,
 		gameOver: false,
 	}
 
@@ -82,11 +78,20 @@ func (f frogGame) Init() tea.Cmd {
 }
 
 func (f frogGame) View() string {
+	if f.width == 0 {
+		return "loading"
+	}
 	scoreLabel := scoreStyle.Render("score")
 	scoreText := fmt.Sprintf("\n%s: %d\n\n", scoreLabel, f.score)
 
+	if(f.startScreen) {
+		return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, 
+				startBorder.Render(startScreenStyle.Render("> Frog Game") + 
+				"\n\nenter to play"))
+	}
+
 	if f.gameOver {
-		return gameOverStyle.Render(gameOverText) + scoreText + "ctrl+c to quit\n"
+		return gameOverStyle.Render(gameOverText) + scoreText + "ctrl+c/q to quit\n"
 	}
 
 	screen := ""
@@ -105,9 +110,9 @@ func (f frogGame) View() string {
 		}
 	}
 
-	helpMsg := "arrow keys to move\ncontrol + c\n"
+	helpMsg := "arrows to move | ctrl+c/q to quit\n"
 
-	return boardStyle.Render(screen) + scoreText + helpMsg
+	return lipgloss.Place(f.width, f.height, lipgloss.Center, lipgloss.Center, boardStyle.Render(screen) + scoreText + helpMsg)
 }
 
 func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -121,6 +126,8 @@ func (f frogGame) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return f, tea.Quit
 		case "q":
 			return f, tea.Quit
+		case "enter":
+			f.startScreen = false;
 		case "up":
 			if f.frog.y > 0 {
 				f.frog.y--
