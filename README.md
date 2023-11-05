@@ -7,6 +7,7 @@ This project is built entirely in Go on the Charm suite of tools, and hosted on 
 To try it run:   
 ```bash 
 ssh mootqns.me -p 8000
+```
 
 # gameplay
 ![start-swimmer](https://github.com/mootqns/tui-ssh-game/assets/96968627/2212208c-d753-4dec-ac84-0fbe0fa78707)
