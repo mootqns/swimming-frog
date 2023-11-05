@@ -51,7 +51,7 @@ type frogGame struct {
 }
 
 func newFrogGame() frogGame {
-	frog := coord{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT / 2}
+	frog := coord{x: (BOARD_WIDTH / 2) + 1, y: BOARD_HEIGHT - 1}
 
 	testLog := wood{
 		body: []coord{
